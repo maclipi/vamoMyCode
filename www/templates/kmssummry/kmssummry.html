@@ -1,0 +1,65 @@
+<ion-view title="1 Month KM's Report  "  hide-nav-bar="false" class="imageBack" >
+     <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+  <ion-content>
+
+<ion-scroll direction="x" class="wide-as-needed">
+   <div class="buttonScroll row" >
+       <div ng-repeat="P in getAllDetails track by $index">
+       <div class="col"><button class="button button-energized" ng-click="getVehicleInfo(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
+       </div>
+  </div>
+ </ion-scroll>
+
+
+
+<div class="card">
+  <div class="item item-text-wrap">
+    <div class="fixCenter">
+   <span class="printDate"> {{currentDate | date:'dd-MMM-yy'}}</span> to <span class="printDate"> {{nextMonthDate| date:'dd-MMM-yy'}}</span>
+    </div>
+  </div>
+</div>
+
+
+<div class="card" ng-repeat="item in getKmDetails">
+  <div class="item item-divider">
+   <span class="vehicalHeading">{{item.shortName |  split: '(':0 }} ({{item.shortName |  split: '(':1 | removeSpaces}}</span>
+  </div>
+  <div class="item item-text-wrap">
+      <div class="extraInfo row">
+                <div class="extraInfoValue col">Today</div>
+                <div class="col ">
+                 <span class="extraInfoValue"> {{item.distanceToday}} KM</span>
+                  </div>
+           </div>
+
+             <div class="extraInfo row">
+                <div class="extraInfoValue col">Yesterday</div>
+                <div class="col ">
+                 <span class="extraInfoValue">{{item.distanceYest}} KM</span>
+                  </div>
+           </div>
+
+
+             <div class="extraInfo row">
+                <div class="extraInfoValue col">Week</div>
+                <div class="col ">
+                 <span class="extraInfoValue">{{item.distanceWeek}} KM </span>
+                  </div>
+           </div>
+
+
+             <div class="extraInfo row">
+                <div class="extraInfoValue col">Month</div>
+                <div class="col ">
+                <span class="extraInfoValue">{{item.distanceMonth}} KM</span>
+                  </div>
+           </div>
+  </div>
+ 
+</div>
+
+    </ion-content>
+</ion-view>

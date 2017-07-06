@@ -1,0 +1,186 @@
+<ion-view title="Hi,{{username}}" id="page4"  hide-nav-bar="false" class="imageBack" >
+  
+     <ion-nav-buttons side="left">
+    <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+  </ion-nav-buttons>
+     <style>
+    .button {
+    border-color: transparent;
+    background-color: #f8f8f8;
+    color: #444;
+    position: relative;
+    display: inline-block;
+    margin: 0;
+    margin-top: 10px;
+    padding: 0px 6px;
+    min-width: 27px;
+    min-height: 27px;
+    border-width: 1px;
+    border-style: solid;
+    border-radius: 4px;
+    vertical-align: top;
+    text-align: center;
+    text-overflow: ellipsis;
+    font-size: 13px;
+    line-height: 21px;
+    cursor: pointer;
+    /* border-radius: 91%; */
+}
+    </style>
+    <ion-content class="slide-in-both-ways"   >
+        <!--<ion-scroll direction="x" class="wide-as-needed">
+   <div class="buttonScroll row" >
+       <div ng-repeat="P in getAllDetails track by $index">
+       <div class="col"><button class="button button-energized" ng-click="getVehicleInfo(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
+       </div>
+  </div>
+ </ion-scroll>-->
+      <div>
+        <div class="row">
+            <div class="col card"><div class="">
+                <div class="col">
+
+                   <canvas id="pie" ng-show="chartPieShowType" class="chart chart-pie" chart-data="data"  chart-labels="labels" chart-options="options"></canvas>
+                    <canvas id="bar" ng-show="chartBarShowType" class="chart chart-bar" chart-data="data"  chart-labels="labels" chart-options="options"></canvas>
+                   <canvas id="line" ng-show="chartLineShowType" class="chart chart-line" chart-data="data"  chart-labels="labels" chart-options="options"></canvas>
+                   <div class="row">
+                     <div class="col"><button class="button button-positive" ng-click="pieChartType()" >Pie Chart</button></div>
+                     <div class="col"><button class="button button-positive" ng-click="barChartType()">Bar Chart</button></div>
+                     <div class="col"><button class="button button-positive" ng-click="lineChartType()">Line Chart</button></div>
+                   </div>
+                </div>
+             
+            </div>
+            </div>
+
+           
+        </div>
+        
+      </div>
+      <div class="row groupDetail">
+        <div class="col card">
+          <div class="groupFont">{{group | split: ':':0}}</div>
+        </div>
+      </div>
+
+      <div class="row groupDetail">
+        <div class=" col card superCard">
+           <div class="extraInfo row">
+            <div class="extraInfoType col">Total Vehicle</div>
+            <div class="extraInfoValue col" ng-if="totalVehicles == 1"> {{totalVehicles}} Vehicle</div>
+            <div class="extraInfoValue col" ng-if="totalVehicles  > 1"> {{totalVehicles}} Vehicles</div>
+            
+        </div>
+        <div class="seprator"></div>
+         <div class="extraInfo row">
+            <div class="extraInfoType col">Top Speed</div>
+            <div class="extraInfoValue col">{{topSpeed}} Km/h</div>
+           
+        </div>
+        <div class="seprator"></div>
+         <div class="extraInfo row">
+            <div class="extraInfoType col">Top Speed Vehicle</div>
+            <div class="extraInfoValue col">{{topSpeedVehicleId}}</div>
+           
+        </div>
+
+        <div class="seprator"></div>
+         <div class="extraInfo row">
+            <div class="extraInfoType col">Online Vehicle</div>
+            <div class="extraInfoValue col">{{onlineVehicles}}</div>
+           
+        </div>
+        <div class="seprator"></div>
+         <div class="extraInfo row">
+            <div class="extraInfoType col">Moving Vehicle</div>
+            <div class="extraInfoValue col">{{totalMovingVehicles}} are Moving</div>
+           
+        </div>
+        <div class="seprator"></div>
+         <div class="extraInfo row">
+            <div class="extraInfoType col">Idle Vehicle</div>
+            <div class="extraInfoValue col">{{totalIdleVehicles}} are Idle</div>
+        </div>
+           <div class="seprator"></div>
+         <div class="extraInfo row">
+            <div class="extraInfoType col">Parked Vehicle</div>
+            <div class="extraInfoValue col">{{totalParkedVehicles}} are Parked</div>
+        </div>
+
+         <div class="seprator"></div>
+         <div class="extraInfo row">
+            <div class="extraInfoType col">No Data</div>
+            <div class="extraInfoValue col">{{totalNoDataVehicles}} No Data</div>
+        </div>
+
+        </div>
+
+      </div>
+
+        
+              
+    </ion-content>
+
+  <ion-footer-bar style="background-color:transparent !important; height:16%; margin-left:-6px;">
+
+    <ul>
+    <li>
+    
+    </li>
+    <li class="restThing">
+        <div class="row">
+      <ion-scroll direction="x" class=" scrollBottom">
+        <div class="row" >
+          <div ng-repeat="P in getAllDetails | orderBy: 'group' | filter: vehicle : false track by $index">
+            <div class="col"><button class="button button-energized"   ng-click = "getVehicleInfo(P.group,$index)">{{P.group | split: ':':0}}</button></div>
+          </div>
+        </div>
+      </ion-scroll>
+   
+    
+     <div class="row" style="margin-top:12%; position:fixed;">
+    <div class="button-bar"  ng-hide ="hide" ng-show="search">
+      <a class="button button-positive" ng-click="toggle()"><span style="font-size:20px" class="ion-ios-search"></span></a>
+     
+       <a class="button button-balanced fontFooter"><img src="img/icons/group.png" ></a>
+        <a class="button button-balanced fontFooter"><img src="img/icons/group.png" ></a>
+    </div>
+    <div class="bar bar-header item-input-inset"  ng-hide ="search" ng-show="hide">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios7-search placeholder-icon"></i>
+        <input type="search" ng-model="vehicle.$"   ng-change="vm.search(vm.searchTerm)"
+         ng-model-options="{debounce: 2000}"  placeholder="Vehicle/Group Anything">
+      </label>
+      <button  ng-click="change()" class="button button">
+        Cancel
+      </button>
+    </div>
+     </div>
+
+  
+
+    </li>
+</ul>
+<!--<div class="row restDetail">
+    <div class="button-bar"  ng-hide ="hide" ng-show="search">
+      <a class="button button-positive" ng-click="toggle()"><span style="font-size:20px" class="ion-ios-search"></span></a>
+      <a class="button button-balanced fontFooter"><img src="img/icons/all.png"></a>
+      <a class="button button-balanced fontFooter" ng-click="Moving()"><img src="img/icons/moving-truck.png" ></a>
+      <a class="button button-balanced fontFooter"><img src="img/icons/parked.png" ></a>
+       <a class="button button-balanced fontFooter"><img src="img/icons/group.png" ></a>
+        <a class="button button-balanced fontFooter"><img src="img/icons/group.png" ></a>
+    </div>
+    <div class="bar bar-header item-input-inset"  ng-hide ="search" ng-show="hide">
+      <label class="item-input-wrapper">
+        <i class="icon ion-ios7-search placeholder-icon"></i>
+        <input type="search" ng-model="vehicle.$"   ng-change="vm.search(vm.searchTerm)"
+         ng-model-options="{debounce: 2000}"  placeholder="Vehicle/Group Anything">
+      </label>
+      <button  ng-click="change()" class="button button">
+        Cancel
+      </button>
+    </div>
+</div>-->
+  </ion-footer-bar>
+    
+</ion-view>

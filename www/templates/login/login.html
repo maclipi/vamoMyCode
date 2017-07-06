@@ -1,0 +1,26 @@
+<ion-view title="Login" id="page3" class="imageBack"   hide-nav-bar="true" >
+  <ion-content padding="true"  >
+
+
+        <div class="placeLogo"><img src="img/logo-full.png"></div>
+        <div class="compnyText">VAMOSYS</div>
+
+
+    <div class="positionLogin">
+      <form name="signInForm">
+      <label class="item item-input item-floating-label">
+    <span class="input-label">Username</span>
+    <input type="text" ng-model="user.username"  placeholder="Username" required >
+  </label>
+  <label class="item item-input item-floating-label">
+    <span class="input-label">Password</span>
+    <input type="password" ng-model="user.userpassword" placeholder="Password" required >
+  </label>
+      </form>
+      </div>
+
+      <button class="button button-block button-energized" ng-disabled="signInForm.$invalid" ng-click="login()" style="margin-top:30px; padding:10px;">
+  Login
+</button>
+    </ion-content>
+</ion-view>

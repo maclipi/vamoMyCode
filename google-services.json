@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "1084877565753",
+    "project_id": "vamos-gcm"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1084877565753:android:5865d8c45405f8d2",
+        "android_client_info": {
+          "package_name": "com.vamosys.vamos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1084877565753-8rm00avtkaalo3q21ocac4nb4ag83nj9.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1084877565753-nvqdnd8d519umhva6ci5of3su4m2l71t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9BFxlAHUYknLaC0H-esWgfpDVozx6aSY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
