@@ -1,84 +1,178 @@
-<ion-view title="Hi,{{username}}" id="page4"  hide-nav-bar="false" >
+<ion-view title="Hi,{{username}}" id="page4"  hide-nav-bar="false"  class="imageBack"  ng-init="showAllVehicle()" >
 
   <ion-nav-buttons >
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
+
+    <div class="bar bar-subheader" style="width: 100%; height: 100%;  margin-top: 6% !important;">
+      <ion-scroll direction="x" class="wide-as-needed">
+        <div class="buttonScroll row" >
+          <div ng-repeat="P in getAllDetails track by $index">
+            <div class="col"><button class="button button-energized" ng-click="listGroup(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
+          </div>
+        </div>
+      </ion-scroll>
+    </div>
 
   </ion-nav-buttons>
 
 
   <style>
-    .button {
-    border-color: transparent;
-    background-color: #f8f8f8;
-    color: #444;
-    position: relative;
-    display: inline-block;
-    margin: 0;
-    padding: 0px 6px;
-    min-width: 27px;
-    min-height: 27px;
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 4px;
-    vertical-align: top;
-    text-align: center;
-    text-overflow: ellipsis;
-    font-size: 13px;
-    line-height: 21px;
-    cursor: pointer;
-    /* border-radius: 91%; */
-}
+        .button {
+            border-color: transparent;
+            background-color: #f8f8f8;
+            color: #444;
+            position: relative;
+            display: inline-block;
+            margin: 0;
+            padding: 0px 6px;
+            min-width: 27px;
+            min-height: 27px;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 4px;
+            vertical-align: top;
+            text-align: center;
+            text-overflow: ellipsis;
+            font-size: 13px;
+            line-height: 21px;
+            cursor: pointer;
+            /* border-radius: 91%; */
+        }
 
-.bar {
-    padding: 0px;
-}
+    .bar {
+        padding: 0px;
+    }
     </style>
 
 
 
 
-  <ion-content padding="true" class="imageBack"  >
+  <ion-content padding="true" style="padding-top: 10%;">
 
 
 
+
+    <!-- MODAL FOR THE MAP START -->
 
     <script id="templates/mylongform.html" type="text/ng-template">
-      <ion-modal-view class="product edit create">
+      <ion-modal-view class="product edit create imageBack" >
 
         <ion-header-bar class="bar-balanced">
 
-          <button class="button icon ion-navicon"></button>
-          <h1 class="title">Header Buttons</h1>
+
+          <h1 class="title">Vehicle Location </h1>
           <button class="button" ng-click="closeModal()">close</button>
 
         </ion-header-bar>
         <ion-content >
-          <ng-map center="{{lat}},{{long}}" style="width:100%; height:500px;" zoom="15">
-            <marker position="{{lat}},{{long}}" ></marker>
+          <div ng-if='showMap == 1'>
+            <ng-map center="{{lat}},{{long}}" style="width:100%; height:600px !important;" zoom="10">
+              <marker position="{{lat}},{{long}}" ></marker>
 
-            <custom-control id="home" position="BOTTOM_LEFT" style="padding-bottom:10%;" index="1">
-              <div>
-                <ul>
-                  <li><button class="button button-balanced" ng-click="openModal()">Locate Me </button></li>
+              <custom-control id="home" position="BOTTOM_LEFT" style="padding-bottom:10%;" index="1">
+                <div>
+                  <ul>
+                    <li><button class="button button-balanced" >Locate Me </button></li>
 
 
-                </ul>
+                  </ul>
+                </div>
+              </custom-control>
+            </ng-map>
+
+
+
+          </div>
+
+          <div ng-if='showMap == 2'>
+
+
+            <div class="card">
+              <div class="row">
+                <div class="col">
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label dateSelect" >From Date</span>
+                    <input type="date" ng-model="fromDate" value="2017-01-15" class="dateSelect">
+                  </label>
+
+                </div>
+
+                <div class="col">
+                  <label class="item item-input item-stacked-label">
+                    <span class="input-label dateSelect" >To Date</span>
+                    <input type="date" class="dateSelect" ng-model="toDate" value="07-15-2017" ng-change="getVehicleReport(fromDate,toDate)">
+                  </label>
+
+                </div>
+
+
+
               </div>
-            </custom-control>
-          </ng-map>
+
+            </div>
+
+            <div class="card" ng-repeat="item in historyData | limitTo:fun">
+              <div class="item item-divider dateSelect">
+                <span class="dateSelect" style="float: left;">{{item.date |  date:"dd-MMM-yy"}}</span><span class="dateSelect" style="float: right;">{{item.date | date:"HH:MM"}}</span>
+              </div>
+              <div class="item item-text-wrap">
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Sat Num</div>
+                  <div class="extraInfoValue col">{{item.gsmLevel}}</div>
+                  <div class="extraInfoType col">Max Speed</div>
+                  <div class="extraInfoValue col">{{item.maxSpeed}} km/h</div>
+                </div>
+                <div class="seprator"></div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Over Speed</div>
+                  <div class="extraInfoValue col">{{item.isOverSpeed}}</div>
+                  <div class="extraInfoType col">Fuel</div>
+                  <div class="extraInfoValue col">{{item.fuelLitre}} Lit</div>
+                </div>
+                <div class="seprator"></div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">C-dist</div>
+                  <div class="extraInfoValue col">{{item.distanceCovered}} KM</div>
+                  <div class="extraInfoType col">ODO Meter</div>
+                  <div class="extraInfoValue col">{{item.odoDistance}} km</div>
+                </div>
+
+
+              </div>
+              <div class="item item-divider" style="font-size: 12px;">
+                {{item.address}}
+              </div>
+            </div>
+          </div>
 
 
         </ion-content>
-        
+
+
+
       </ion-modal-view>
-      
+
     </script>
 
 
 
+    <!-- MODAL FOR THE MAP END -->
 
 
-    <div class="bar bar-header item-input-inset" ng-hide="true" >
+
+
+
+
+
+
+
+
+
+
+    <div class="bar bar-header item-input-inset" ng-hide="true" style="margin-top: 5%;">
 
       <label class="item-input-wrapper">
         <i class="icon ion-ios-search placeholder-icon"></i>
@@ -96,181 +190,598 @@
 
 
     <div>
-     
+
 
       <ion-list >
-        <div ng-repeat="P in getAllDetails" >
-              
-          <div  class="card  {{item.ignitionStatus === 'OFF' ? 'vehicleOff' : item.isOverSpeed == 'Y' ? 'overspeed' : item.noDataTime > 0 ? 'nodata' : 'movingFine'}} {{item.parkedTime === 0 ? 'parkedVehicle' :'anrag'}} {{item.insideGeoFence === 'Y' ? 'geoFence' : 'anrag' }} "  ng-repeat="item in P.vehicleLocations  | orderBy: 'vehicleType' |  limitTo:50 | filter: vehicle : false track by $index">
 
-            <div class="item item-text item-avatar"  style=" padding-bottom: 0px;">
-              <img  ng-src="{{item.vehicleType === 'Truck' ? 'img/vehicletypes/truck.png' : item.vehicleType === 'heavy Vehicles' ? 'img/vehicletypes/truck-heavy.png' : item.vehicleType === 'Car' ? 'img/vehicletypes/car.png' : item.vehicleType === 'Bus' ? 'img/vehicletypes/bus.png' :  'img/vehicletypes/no.png'}}">
+        <div ng-if="showAll === 'show'" >
+          <div ng-repeat="P in getAllDetails" >
 
-              <div class="row" ng-click="showMe = !showMe">
-                <div class="col col-80">
-                  <h2 class="vehicleNum">{{item.shortName}}</h2>
-                  <div class="row shortDetail">
-                    <p class="vehicleCurrent shortDetail  col col-30" ng-show="item.fuelLitre !== 0"><span style="padding-right:2px">
-                              <img src="img/icons/fuelMeter.png" width="8px" height="8px"></span>{{item.fuelLitre}} L</p>
-                    <p class="vehicleCurrent shortDetail col" ><span style="padding-right:2px">
-                              <img src="img/icons/power.png" width="8px" height="8px"></span>{{item.ignitionStatus}}
-                    </p>
-                    <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.distanceCovered !== 0"><span style="">
-                              </span>{{item.distanceCovered}} Km
-                    </p>
-                    <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.speed !== 0" ><span>
-                             </span>{{item.speed}} Km/h
-                    </p>
+            <div  class="card  {{item.ignitionStatus === 'OFF' ? 'offMeter' : item.isOverSpeed == 'Y' ? 'overspeed' : item.noDataTime > 0 ? 'nodata' : 'movingFine'}} {{item.position === 'P' ? 'parkedVehicle' :'anrag'}} {{item.insideGeoFence === 'Y' ? 'geoFence' : 'anrag' }} "  ng-repeat="item in P.vehicleLocations  |   limitTo:fun | filter: vehicle : false track by $index" on-finish-render="ngRepeatFinished">
+
+              <div class="item item-text item-avatar"  style=" padding-bottom: 0px;">
+                <img  ng-src="{{item.vehicleType === 'Truck' ? 'img/vehicletypes/truck.png' : item.vehicleType === 'heavy Vehicles' ? 'img/vehicletypes/truck-heavy.png' : item.vehicleType === 'Car' ? 'img/vehicletypes/car.png' : item.vehicleType === 'Bus' ? 'img/vehicletypes/bus.png' :  'img/vehicletypes/no.png'}}">
+
+                <div class="row" ng-click="showMe = !showMe">
+                  <div class="col col-80">
+                    <h2 class="vehicleNum">{{item.shortName}}</h2>
+                    <div class="row shortDetail">
+                      <p class="vehicleCurrent shortDetail  col col-30" ng-show="item.fuelLitre !== 0"><span style="padding-right:2px">
+                                                    <img src="img/icons/fuelMeter.png" width="8px" height="8px"></span>{{item.fuelLitre}} L</p>
+                      <p class="vehicleCurrent shortDetail col" ><span style="padding-right:2px">
+                                                    <img src="img/icons/power.png" width="8px" height="8px"></span>{{item.ignitionStatus}}
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.distanceCovered !== 0"><span style="">
+                                                </span>{{item.distanceCovered}} Km
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.speed !== 0" ><span>
+                                                </span>{{item.speed}} Km/h
+                      </p>
+                    </div>
                   </div>
+                  <div class="timeTrack col col-25">
+                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                  </div>
+
+
+
+
+                  <!--                      {{item.lastSeen | split:' ':1}} {{item.lastSeen | split:'-': 0}}- {{item.lastSeen | split:'-':1  }}-->
                 </div>
-                <div class="timeTrack col col-25">
-                  <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
-                  <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
-                  <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+
+                <div class="addressHomeTop">{{item.address}}</div>
+              </div>
+
+
+              <div ng-show="showMe">
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col">Ig</div>
+                  <div class="extraInfoValue col">{{item.ignitionStatus}}</div>
+                  <div class="extraInfoType col">ODO Meter</div>
+                  <div class="extraInfoValue col">{{item.odoDistance}}</div>
+                </div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Moving Time</div>
+                  <div class="extraInfoValue col">{{item.movingTime | formatDuration }}</div>
+                  <div class="extraInfoType col">speed</div>
+                  <div class="extraInfoValue col">{{item.speed}}</div>
                 </div>
 
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Power</div>
+                  <div class="extraInfoValue col">{{item.powerStatus}}</div>
+                  <div class="extraInfoType col">Device</div>
+                  <div class="extraInfoValue col">{{item.deviceStatus}}</div>
+                </div>
 
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Over Speed</div>
+                  <div class="extraInfoValue col">{{item.overSpeedLimit}}</div>
+                  <div class="extraInfoType col">Idle Time</div>
+                  <div class="extraInfoValue col">{{item.idleTime}}</div>
+                </div>
 
-
-                <!--                      {{item.lastSeen | split:' ':1}} {{item.lastSeen | split:'-': 0}}- {{item.lastSeen | split:'-':1  }}-->
-              </div>
-
-              <div class="addressHomeTop">{{item.address}}</div>
-            </div>
-
-
-            <div ng-show="showMe">
-              <div class="seprator"></div>
-              <div class="extraInfo row">
-                <div class="extraInfoType col">Ig</div>
-                <div class="extraInfoValue col">{{item.ignitionStatus}}</div>
-                <div class="extraInfoType col">ODO Meter</div>
-                <div class="extraInfoValue col">{{item.odoDistance}}</div>
-              </div>
-              <div class="extraInfo row">
-                <div class="extraInfoType col col-25">Moving Time</div>
-                <div class="extraInfoValue col">{{item.movingTime | formatDuration }}</div>
-                <div class="extraInfoType col">speed</div>
-                <div class="extraInfoValue col">{{item.speed}}</div>
-              </div>
-
-              <div class="extraInfo row">
-                <div class="extraInfoType col col-25">Power</div>
-                <div class="extraInfoValue col">{{item.powerStatus}}</div>
-                <div class="extraInfoType col">Device</div>
-                <div class="extraInfoValue col">{{item.deviceStatus}}</div>
-              </div>
-
-              <div class="extraInfo row">
-                <div class="extraInfoType col col-25">Over Speed</div>
-                <div class="extraInfoValue col">{{item.overSpeedLimit}}</div>
-                <div class="extraInfoType col">Idle Time</div>
-                <div class="extraInfoValue col">{{item.idleTime}}</div>
-              </div>
-
-              <div class="extraInfo row">
-                <div class="extraInfoType col col-25">Parked Time</div>
-                <div class="extraInfoValue col">{{item.parkedTime | formatDuration}}</div>
-                <div class="extraInfoType col">Inside Geo</div>
-                <div class="extraInfoValue col">{{item.insideGeoFence}}</div>
-              </div>
-
-              <!--<div class="extraInfo row">
+                <div class="extraInfo row">
                   <div class="extraInfoType col col-25">Parked Time</div>
-                  <div class="extraInfoValue col">OFF</div>
-                  <div class="extraInfoType col">Last Seen</div>
-                  <div class="extraInfoValue col">22:20</div>
-              </div>-->
-              <div class="seprator"></div>
-              <div class="extraInfo row">
-                <div class="extraInfoValue col">+91 9718 52 778</div>
-                <div class="col col-20">
-                  <button class="button button-outline button-balanced" style="height:10px !important;">call</button>
+                  <div class="extraInfoValue col">{{item.parkedTime | formatDuration}}</div>
+                  <div class="extraInfoType col">Inside Geo</div>
+                  <div class="extraInfoValue col">{{item.insideGeoFence}}</div>
                 </div>
 
+                <!--<div class="extraInfo row">
+                 <div class="extraInfoType col col-25">Parked Time</div>
+                 <div class="extraInfoValue col">OFF</div>
+                 <div class="extraInfoType col">Last Seen</div>
+                 <div class="extraInfoValue col">22:20</div>
+                 </div>-->
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoValue col">History of {{item.shortName}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" ng-click="openModal(2,item.vehicleId)" style="height:10px !important;" >History</button>
+                  </div>
 
-              </div>
-              <div class="seprator"></div>
-              <div class="extraInfo row">
 
-                <div class="extraInfoValue addressShow col">{{item.address}}</div>
-                <div class="col col-20">
-                  <button class="button button-outline button-balanced" ng-click="openModal(item.latitude,item.longitude)" style="height:10px !important;">
-                    Go
-                  </button>
                 </div>
+                <div class="seprator"></div>
+                <div class="extraInfo row">
 
-              </div>
-              <div class="row">
-                <ng-map center="{{item.latitude}},{{item.longitude}}"  style="width:100%; height:100px;" zoom="5">
-                  <marker position="{{item.latitude}},{{item.longitude}}"  on-click="map.showInfoWindow('bar')" title="Hello World!"></marker>
-                     <info-window id="bar">
-        <div ng-non-bindable>
-         Vehicle Num - <b> {{item.shortName}} </b>
-         
-        </div>
-      </info-window>
-                </ng-map>
+                  <div class="extraInfoValue addressShow col">{{item.address}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" ng-click="openModal(1,item.vehicleId,item.latitude,item.longitude)" style="height:10px !important;">
+                      Go
+                    </button>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <ng-map center="{{item.latitude}},{{item.longitude}}"  style="width:100%; height:100px;" zoom="5">
+                    <marker position="{{item.latitude}},{{item.longitude}}"  on-click="map.showInfoWindow('bar')" title="Hello World!"></marker>
+                    <info-window id="bar">
+                      <div ng-non-bindable>
+                        Vehicle Num - <b> {{item.shortName}} </b>
+
+                      </div>
+                    </info-window>
+                  </ng-map>
+                </div>
               </div>
             </div>
+
+          </div>
+          <span  ><button class="button button-block button-positive" ng-click="loadMore()"   ng-if="loadMoreStatus === false" >Load More</button></span>
+
+        </div>
+
+
+
+
+
+        <!-- FOR MOVING  START -->
+
+
+        <div ng-repeat="P in getAllDetails" >
+
+          <div ng-if=" movingvehicle === 'show' ">
+
+            <div  ng-if = "item.position === 'M' " class="card  {{item.ignitionStatus === 'OFF' ? 'movingFine' : item.isOverSpeed == 'Y' ? 'overspeed' : item.noDataTime > 0 ? 'nodata' : 'movingFine'}} {{item.insideGeoFence === 'Y' ? 'geoFence' : 'anrag' }} "  ng-repeat="item in P.vehicleLocations  | orderBy: 'vehicleType' |  limitTo:fun | filter: vehicle : false track by $index" >
+
+              <div class="item item-text item-avatar"  style=" padding-bottom: 0px;">
+                <img  ng-src="{{item.vehicleType === 'Truck' ? 'img/vehicletypes/truck.png' : item.vehicleType === 'heavy Vehicles' ? 'img/vehicletypes/truck-heavy.png' : item.vehicleType === 'Car' ? 'img/vehicletypes/car.png' : item.vehicleType === 'Bus' ? 'img/vehicletypes/bus.png' :  'img/vehicletypes/no.png'}}">
+
+                <div class="row" ng-click="showMe = !showMe">
+                  <div class="col col-80">
+                    <h2 class="vehicleNum">{{item.shortName}}</h2>
+                    <div class="row shortDetail">
+                      <p class="vehicleCurrent shortDetail  col col-30" ng-show="item.fuelLitre !== 0"><span style="padding-right:2px">
+                                                    <img src="img/icons/fuelMeter.png" width="8px" height="8px"></span>{{item.fuelLitre}} L</p>
+                      <p class="vehicleCurrent shortDetail col" ><span style="padding-right:2px">
+                                                    <img src="img/icons/power.png" width="8px" height="8px"></span>{{item.ignitionStatus}}
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.distanceCovered !== 0"><span style="">
+                                                </span>{{item.distanceCovered}} Km
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.speed !== 0" ><span>
+                                                </span>{{item.speed}} Km/h
+                      </p>
+                    </div>
+                  </div>
+                  <div class="timeTrack col col-25">
+                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                  </div>
+
+
+
+
+                  <!--                      {{item.lastSeen | split:' ':1}} {{item.lastSeen | split:'-': 0}}- {{item.lastSeen | split:'-':1  }}-->
+                </div>
+
+                <div class="addressHomeTop">{{item.address}}</div>
+              </div>
+
+
+              <div ng-show="showMe">
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col">Ig</div>
+                  <div class="extraInfoValue col">{{item.ignitionStatus}}</div>
+                  <div class="extraInfoType col">ODO Meter</div>
+                  <div class="extraInfoValue col">{{item.odoDistance}}</div>
+                </div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Moving Time</div>
+                  <div class="extraInfoValue col">{{item.movingTime | formatDuration }}</div>
+                  <div class="extraInfoType col">speed</div>
+                  <div class="extraInfoValue col">{{item.speed}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Power</div>
+                  <div class="extraInfoValue col">{{item.powerStatus}}</div>
+                  <div class="extraInfoType col">Device</div>
+                  <div class="extraInfoValue col">{{item.deviceStatus}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Over Speed</div>
+                  <div class="extraInfoValue col">{{item.overSpeedLimit}}</div>
+                  <div class="extraInfoType col">Idle Time</div>
+                  <div class="extraInfoValue col">{{item.idleTime}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Parked Time</div>
+                  <div class="extraInfoValue col">{{item.parkedTime | formatDuration}}</div>
+                  <div class="extraInfoType col">Inside Geo</div>
+                  <div class="extraInfoValue col">{{item.insideGeoFence}}</div>
+                </div>
+
+                <!--<div class="extraInfo row">
+                 <div class="extraInfoType col col-25">Parked Time</div>
+                 <div class="extraInfoValue col">OFF</div>
+                 <div class="extraInfoType col">Last Seen</div>
+                 <div class="extraInfoValue col">22:20</div>
+                 </div>-->
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoValue col" >History of {{item.shortName}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" style="height:10px !important;" >History</button>
+                  </div>
+
+
+                </div>
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+
+                  <div class="extraInfoValue addressShow col">{{item.address}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" ng-click="openModal(item.latitude,item.longitude)" style="height:10px !important;">
+                      Go
+                    </button>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <ng-map center="{{item.latitude}},{{item.longitude}}"  style="width:100%; height:100px;" zoom="5">
+                    <marker position="{{item.latitude}},{{item.longitude}}"  on-click="map.showInfoWindow('bar')" title="Hello World!"></marker>
+                    <info-window id="bar">
+                      <div ng-non-bindable>
+                        Vehicle Num - <b> {{item.shortName}} </b>
+
+                      </div>
+                    </info-window>
+                  </ng-map>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+
+
+        <!-- MOVING VEHICLE END-->
+
+
+
+
+
+        <!-- FOR PARKED  START -->
+
+
+        <div ng-if="parkedVehicle === 'show' ">
+
+          <div ng-repeat="P in getAllDetails" >
+
+            <div  ng-if = "item.position === 'P' " class="card {{item.position === 'P' ? 'parkedVehicle' :'anrag'}} {{item.insideGeoFence === 'Y' ? 'geoFence' : 'anrag' }} "  ng-repeat="item in P.vehicleLocations  | orderBy: 'vehicleType' |  limitTo:50 | filter: vehicle : false track by $index" >
+
+              <div class="item item-text item-avatar"  style=" padding-bottom: 0px;">
+                <img  ng-src="{{item.vehicleType === 'Truck' ? 'img/vehicletypes/truck.png' : item.vehicleType === 'heavy Vehicles' ? 'img/vehicletypes/truck-heavy.png' : item.vehicleType === 'Car' ? 'img/vehicletypes/car.png' : item.vehicleType === 'Bus' ? 'img/vehicletypes/bus.png' :  'img/vehicletypes/no.png'}}">
+
+                <div class="row" ng-click="showMe = !showMe">
+                  <div class="col col-80">
+                    <h2 class="vehicleNum">{{item.shortName}}</h2>
+                    <div class="row shortDetail">
+                      <p class="vehicleCurrent shortDetail  col col-30" ng-show="item.fuelLitre !== 0"><span style="padding-right:2px">
+                                                    <img src="img/icons/fuelMeter.png" width="8px" height="8px"></span>{{item.fuelLitre}} L</p>
+                      <p class="vehicleCurrent shortDetail col" ><span style="padding-right:2px">
+                                                    <img src="img/icons/power.png" width="8px" height="8px"></span>{{item.ignitionStatus}}
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.distanceCovered !== 0"><span style="">
+                                                </span>{{item.distanceCovered}} Km
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.speed !== 0" ><span>
+                                                </span>{{item.speed}} Km/h
+                      </p>
+                    </div>
+                  </div>
+                  <div class="timeTrack col col-25">
+                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                  </div>
+
+
+
+
+                  <!--                      {{item.lastSeen | split:' ':1}} {{item.lastSeen | split:'-': 0}}- {{item.lastSeen | split:'-':1  }}-->
+                </div>
+
+                <div class="addressHomeTop">{{item.address}}</div>
+              </div>
+
+
+              <div ng-show="showMe">
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col">Ig</div>
+                  <div class="extraInfoValue col">{{item.ignitionStatus}}</div>
+                  <div class="extraInfoType col">ODO Meter</div>
+                  <div class="extraInfoValue col">{{item.odoDistance}}</div>
+                </div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Moving Time</div>
+                  <div class="extraInfoValue col">{{item.movingTime | formatDuration }}</div>
+                  <div class="extraInfoType col">speed</div>
+                  <div class="extraInfoValue col">{{item.speed}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Power</div>
+                  <div class="extraInfoValue col">{{item.powerStatus}}</div>
+                  <div class="extraInfoType col">Device</div>
+                  <div class="extraInfoValue col">{{item.deviceStatus}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Over Speed</div>
+                  <div class="extraInfoValue col">{{item.overSpeedLimit}}</div>
+                  <div class="extraInfoType col">Idle Time</div>
+                  <div class="extraInfoValue col">{{item.idleTime}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Parked Time</div>
+                  <div class="extraInfoValue col">{{item.parkedTime | formatDuration}}</div>
+                  <div class="extraInfoType col">Inside Geo</div>
+                  <div class="extraInfoValue col">{{item.insideGeoFence}}</div>
+                </div>
+
+                <!--<div class="extraInfo row">
+                 <div class="extraInfoType col col-25">Parked Time</div>
+                 <div class="extraInfoValue col">OFF</div>
+                 <div class="extraInfoType col">Last Seen</div>
+                 <div class="extraInfoValue col">22:20</div>
+                 </div>-->
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoValue col">History of {{item.shortName}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" style="height:10px !important;">History</button>
+                  </div>
+
+
+                </div>
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+
+                  <div class="extraInfoValue addressShow col">{{item.address}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" ng-click="openModal(item.latitude,item.longitude)" style="height:10px !important;">
+                      Go
+                    </button>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <ng-map center="{{item.latitude}},{{item.longitude}}"  style="width:100%; height:100px;" zoom="5">
+                    <marker position="{{item.latitude}},{{item.longitude}}"  on-click="map.showInfoWindow('bar')" title="Hello World!"></marker>
+                    <info-window id="bar">
+                      <div ng-non-bindable>
+                        Vehicle Num - <b> {{item.shortName}} </b>
+
+                      </div>
+                    </info-window>
+                  </ng-map>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+
+        </div>
+
+        <!-- MOVING VEHICLE END-->
+
+
+
+
+
+
+
+
+
+        <!-- FOR PARKED  START -->
+
+
+        <div ng-if="vehicleOff === 'show' ">
+
+          <div ng-repeat="P in getAllDetails" >
+
+            <div  ng-if = "item.ignitionStatus === 'OFF' " class="card {{item.ignitionStatus === 'OFF' ? 'offMeter' :'anrag'}} {{item.insideGeoFence === 'Y' ? 'geoFence' : 'anrag' }} "  ng-repeat="item in P.vehicleLocations  | orderBy: 'vehicleType' |  limitTo:50 | filter: vehicle : false track by $index" >
+
+              <div class="item item-text item-avatar"  style=" padding-bottom: 0px;">
+                <img  ng-src="{{item.vehicleType === 'Truck' ? 'img/vehicletypes/truck.png' : item.vehicleType === 'heavy Vehicles' ? 'img/vehicletypes/truck-heavy.png' : item.vehicleType === 'Car' ? 'img/vehicletypes/car.png' : item.vehicleType === 'Bus' ? 'img/vehicletypes/bus.png' :  'img/vehicletypes/no.png'}}">
+
+                <div class="row" ng-click="showMe = !showMe">
+                  <div class="col col-80">
+                    <h2 class="vehicleNum">{{item.shortName}}</h2>
+                    <div class="row shortDetail">
+                      <p class="vehicleCurrent shortDetail  col col-30" ng-show="item.fuelLitre !== 0"><span style="padding-right:2px">
+                                                    <img src="img/icons/fuelMeter.png" width="8px" height="8px"></span>{{item.fuelLitre}} L</p>
+                      <p class="vehicleCurrent shortDetail col" ><span style="padding-right:2px">
+                                                    <img src="img/icons/power.png" width="8px" height="8px"></span>{{item.ignitionStatus}}
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.distanceCovered !== 0"><span style="">
+                                                </span>{{item.distanceCovered}} Km
+                      </p>
+                      <p class="vehicleCurrent shortDetail col  col-30" ng-show="item.speed !== 0" ><span>
+                                                </span>{{item.speed}} Km/h
+                      </p>
+                    </div>
+                  </div>
+                  <div class="timeTrack col col-25">
+                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                  </div>
+
+
+
+
+                  <!--                      {{item.lastSeen | split:' ':1}} {{item.lastSeen | split:'-': 0}}- {{item.lastSeen | split:'-':1  }}-->
+                </div>
+
+                <div class="addressHomeTop">{{item.address}}</div>
+              </div>
+
+
+              <div ng-show="showMe">
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col">Ig</div>
+                  <div class="extraInfoValue col">{{item.ignitionStatus}}</div>
+                  <div class="extraInfoType col">ODO Meter</div>
+                  <div class="extraInfoValue col">{{item.odoDistance}}</div>
+                </div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Moving Time</div>
+                  <div class="extraInfoValue col">{{item.movingTime | formatDuration }}</div>
+                  <div class="extraInfoType col">speed</div>
+                  <div class="extraInfoValue col">{{item.speed}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Power</div>
+                  <div class="extraInfoValue col">{{item.powerStatus}}</div>
+                  <div class="extraInfoType col">Device</div>
+                  <div class="extraInfoValue col">{{item.deviceStatus}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Over Speed</div>
+                  <div class="extraInfoValue col">{{item.overSpeedLimit}}</div>
+                  <div class="extraInfoType col">Idle Time</div>
+                  <div class="extraInfoValue col">{{item.idleTime}}</div>
+                </div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-25">Parked Time</div>
+                  <div class="extraInfoValue col">{{item.parkedTime | formatDuration}}</div>
+                  <div class="extraInfoType col">Inside Geo</div>
+                  <div class="extraInfoValue col">{{item.insideGeoFence}}</div>
+                </div>
+
+                <!--<div class="extraInfo row">
+                 <div class="extraInfoType col col-25">Parked Time</div>
+                 <div class="extraInfoValue col">OFF</div>
+                 <div class="extraInfoType col">Last Seen</div>
+                 <div class="extraInfoValue col">22:20</div>
+                 </div>-->
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoValue col">History of {{item.shortName}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" style="height:10px !important;">History</button>
+                  </div>
+
+
+                </div>
+                <div class="seprator"></div>
+                <div class="extraInfo row">
+
+                  <div class="extraInfoValue addressShow col">{{item.address}}</div>
+                  <div class="col col-20">
+                    <button class="button button-outline button-balanced" ng-click="openModal(item.latitude,item.longitude)" style="height:10px !important;">
+                      Go
+                    </button>
+                  </div>
+
+                </div>
+                <div class="row">
+                  <ng-map center="{{item.latitude}},{{item.longitude}}"  style="width:100%; height:100px;" zoom="5">
+                    <marker position="{{item.latitude}},{{item.longitude}}"  on-click="map.showInfoWindow('bar')" title="Hello World!"></marker>
+                    <info-window id="bar">
+                      <div ng-non-bindable>
+                        Vehicle Num - <b> {{item.shortName}} </b>
+
+                      </div>
+                    </info-window>
+                  </ng-map>
+                </div>
+              </div>
+            </div>
+
           </div>
 
         </div>
+
+        <!-- MOVING VEHICLE END-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </ion-list>
       <div style="padding-bottom:40% !important; "></div>
-     
-  </div>
+
+    </div>
+
+    <div ion-fixed class="map"></div>
 
   </ion-content>
-  
-  <ion-footer-bar style="background-color:transparent !important; height:13%;">
 
-   
-        <div class="row">
-      <ion-scroll direction="x" class=" scrollBottom">
-        <div class="buttonScroll row" >
-          <div ng-repeat="P in getAllDetails | orderBy: 'group' | filter: vehicle : false track by $index">
-            <div class="col"><button class="button button-energized"   ng-click = "getVehicleInfo(P.group,$index)">{{P.group | split: ':':0}}</button></div>
-          </div>
-        </div>
-      </ion-scroll>
-    </div>
-    
+  <ion-footer-bar style="background-color:transparent !important; height:17%;">
+
+
+
+
     <div class="bar bar-header item-input-inset" style="position:fixed;" ng-hide ="search" ng-show="hide">
-      <label class="item-input-wrapper">
+      <label class="item-input-wrapper" focus-me>
         <i class="icon ion-ios7-search placeholder-icon"></i>
         <input type="search" ng-model="vehicle.$"   ng-change="vm.search(vm.searchTerm)"
-         ng-model-options="{debounce: 2000}"  placeholder="Vehicle/Group Anything">
+               ng-model-options="{debounce: 2000}"  placeholder="Vehicle/Group Anything">
       </label>
       <button  ng-click="change()" class="button button">
         Cancel
       </button>
     </div>
-     </div>
+    </div>
 
 
 
 
-<div class="tabs tabs-icon-top tabs-mine">
+    <div class="tabs tabs-icon-top tabs-mine">
 
-  <a class="tab-item"  ng-click="toggle()">
-    <i class="icon ion-ios-search searching"></i>
-  </a>
-  <a class="tab-item">
-    <i class="icon ion-android-car moving"></i>
-    Moving
-  </a>
-  <a class="tab-item">
-    <i class="icon ion-android-car parked"></i>
-    Parked
-  </a>
-  <a class="tab-item">
-    <i class="icon ion-android-car nodatacar"></i>
-    Nodata
-  </a>
-</div>
+      <a class="tab-item"  ng-click="toggle()">
+        <i class="icon ion-ios-search searching"></i>
+      </a>
+      <a class="tab-item">
+        <i class="icon ion-android-car moving" ng-click=" showMovingVehicle()" ></i>
+        Moving
+      </a>
+      <a class="tab-item">
+        <i class="icon ion-android-car parked" ng-click="showParkedVehicle()"></i>
+        Parked
+      </a>
+      <a class="tab-item">
+        <i class="icon ion-android-car offCar" ng-click="vehicleOffMeter()"></i>
+        Off
+      </a>
+      <a class="tab-item">
+        <i class="icon ion-android-car nodatacar" ng-click="showAllVehicle()"></i>
+        All
+      </a>
+    </div>
 
 
-   </ion-footer-bar>
-  
+  </ion-footer-bar>
+
 </ion-view>

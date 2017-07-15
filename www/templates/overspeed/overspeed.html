@@ -1,8 +1,9 @@
-<ion-view title="Over Speed"  hide-nav-bar="false" >
-     <ion-nav-buttons side="left">
+<ion-view title="Setting"  hide-nav-bar="false" ng-init="toggleChange()" >
+  <ion-nav-buttons side="left">
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
   </ion-nav-buttons>
   <ion-content padding="true" class="imageBack"  >
 
-    </ion-content>
+    <ion-toggle ng-model="value" ng-change="toggleChange(value)">{{contentLine}}</ion-toggle>
+  </ion-content>
 </ion-view>

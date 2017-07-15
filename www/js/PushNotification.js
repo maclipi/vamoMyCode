@@ -6,10 +6,15 @@ angular.module('starter.PushHandler', ['ionic'])
     $scope.register = function () {
         var config = null;
 
-        alert(Data.getLoginStatus());
+
+
+        alert("anrag"+Data.getLoginStatus());
+
         if (ionic.Platform.isAndroid()) {
             config = {
-                "senderID": "AIzaSyCpTZ-SUXNkdycM1R3Ne4B_mXZon4w-kwk" // REPLACE THIS WITH YOURS FROM GCM CONSOLE - also in the project URL like: https://console.developers.google.com/project/434205989073
+                "senderID": "AIzaSyCpTZ-SUXNkdycM1R3Ne4B_mXZon4w-kwk",
+                 "senderID": "AIzaSyAPN7jdH1Yi5XKh0H0wzoxJ8vIeGn1GiUQ",
+                 "senderID" : "AIzaSyAVxia5DG7o2a3ERHmioz06-jl5M0gQ6w0"// REPLACE THIS WITH YOURS FROM GCM CONSOLE - also in the project URL like: https://console.developers.google.com/project/434205989073
             };
         }
         else if (ionic.Platform.isIOS()) {

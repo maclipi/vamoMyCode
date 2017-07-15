@@ -12,11 +12,16 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.directive', '
 
 
 
+$ionicPlatform.registerBackButtonAction(function (event) {
+    event.preventDefault();
+}, 100);
+
+
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
 
-      
+
 
     }
     if (window.StatusBar) {
@@ -39,6 +44,7 @@ ionic.Platform.exitApp();
 }
 // alert(Data.getLoginStatus());
 // alert("hello");
+
 var push = PushNotification.init({
       android: {
         senderID: "1084877565753",
@@ -46,7 +52,7 @@ var push = PushNotification.init({
       },
       ios: {
         alert: "true",
-        badge: "false",
+        badge: "true",
         sound: "true",
         clearBadge: "true"
       }
@@ -60,6 +66,12 @@ var push = PushNotification.init({
 
     push.on('notification', function(data){
 
+      $ionicPopup.alert({
+
+              title: data.message,
+              okType: 'button-assertive'
+            });
+
       if (data.additionalData.foreground) {
 
         $ionicPopup.alert({
@@ -67,13 +79,13 @@ var push = PushNotification.init({
           title: data.message,
           okType: 'button-assertive'
         });
-      }      
+      }
     });
 
     push.on('error', function(err){
       alert("PNR Error", JSON.stringify(err));
     });
-                
+
   });
 })
 

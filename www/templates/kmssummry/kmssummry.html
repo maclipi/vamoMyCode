@@ -4,13 +4,7 @@
   </ion-nav-buttons>
   <ion-content>
 
-<ion-scroll direction="x" class="wide-as-needed">
-   <div class="buttonScroll row" >
-       <div ng-repeat="P in getAllDetails track by $index">
-       <div class="col"><button class="button button-energized" ng-click="getVehicleInfo(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
-       </div>
-  </div>
- </ion-scroll>
+
 
 
 
@@ -62,4 +56,41 @@
 </div>
 
     </ion-content>
+
+    <ion-footer-bar style="background-color:transparent !important; height:16%;">
+
+   
+        <div class="row">
+
+      <ion-scroll direction="x" class="wide-as-needed">
+   <div class="buttonScroll row" >
+       <div ng-repeat="P in getAllDetails track by $index">
+       <div class="col"><button class="button button-energized" ng-click="getVehicleInfo(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
+       </div>
+  </div>
+ </ion-scroll>
+    </div>
+    
+    
+     </div>
+
+
+
+
+<div class="tabs tabs-icon-top tabs-mine">
+
+  
+  <a class="tab-item" ui-sref='home'>
+    <i class="icon ion-android-car moving"></i>
+    Vehicles
+  </a>
+  <a class="tab-item" ui-sref='groupMap'>
+    <i class="icon ion-grid nodatacar"></i>
+    Group 
+  </a>
+ 
+</div>
+
+
+   </ion-footer-bar>
 </ion-view>

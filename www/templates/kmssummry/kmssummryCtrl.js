@@ -3,15 +3,15 @@ angular.module('starter.controllers')
 .controller('kmssummryCtrl', function($scope,$ionicLoading,getKMsummry,getGroupVehiclesDetail,Data){
  $scope.userId = Data.getFirstName();
 $scope.$on('$ionicView.enter', function(){
-   
-    alert($scope.userId);
+
+
     var getSomething;
  getGroupVehiclesDetail.all($scope.userId).then(function (data){
-           
+
             console.log(data.data);
             $scope.getAllDetails = data.data;
              $scope.getSomething = data.data[0].group;
-             alert($scope.getSomething);
+
               getKMsummry.all($scope.userId, $scope.getSomething).then(function(data){
 
 
@@ -23,20 +23,19 @@ $scope.$on('$ionicView.enter', function(){
 
         })
 
-        
+
 })
 
  $scope.getKmDetails  = [];
   $scope.getVehicleInfo = function(val,indexVal){
- 
-     console.log(+indexVal+" Dynamic Group Name"+val);
 
+  $ionicLoading.show();
 getGroupVehiclesDetail.all($scope.userId).then(function (data){
-           
-            console.log(data.data);
+
+           $ionicLoading.hide();
             $scope.getAllDetails = data.data;
              $scope.getSomething = data.data[indexVal].group;
-             alert($scope.getSomething);
+
               getKMsummry.all($scope.userId, $scope.getSomething).then(function(data){
 
 
@@ -47,9 +46,9 @@ getGroupVehiclesDetail.all($scope.userId).then(function (data){
 
 
         })
-    
 
-     alert( $scope.getKmDetails );
+
+
 
   }
 
