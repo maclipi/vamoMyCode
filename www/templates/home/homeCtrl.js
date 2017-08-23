@@ -22,11 +22,12 @@ angular.module('starter.controllers')
                        //hiding groups baar from top ;
                        $scope.showMenu = function(){
 
-                        $scope.makeMenuHide = 'hidden';
+                        $scope.makeMenuHide = '';
                        }
                        $scope.hideMenu = function(){
                         $scope.makeMenuHide = '';
                        }
+                       //hiding Groups bar END 
 
 
                        //    *********************************************************** API DATA FOR USER START *******************************************
