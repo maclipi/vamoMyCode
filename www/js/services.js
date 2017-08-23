@@ -10,13 +10,13 @@ angular.module('starter.services', [])
       console.log("token Service"+deviceId);
           return $http.get(''+CONSTANTS.baseUrl+'/verifyUser',
            {
-           	params: {
-          		userId: username,
-          		password:password,
+            params: {
+                userId: username,
+                password:password,
                   gcmId :deviceId,
                   notifyEnable:true
-          	 		}
-          	})
+                    }
+            })
       }
   };
 })
@@ -24,18 +24,18 @@ angular.module('starter.services', [])
 .factory('getUserData',function ($http,$q,CONSTANTS) {
 
 
-	return{
-		all: function (username) {
+    return{
+        all: function (username) {
 
-			return $http.get(''+CONSTANTS.baseUrl+'/getVehicleLocations',{
+            return $http.get(''+CONSTANTS.baseUrl+'/getVehicleLocations',{
 
-				params: {
-					userId: username
-				}
-			})
+                params: {
+                    userId: username
+                }
+            })
 
-		}
-	}
+        }
+    }
 })
 
 
@@ -90,6 +90,27 @@ angular.module('starter.services', [])
     }
 })
 
+// api for getting current vehical location 
+
+.factory('getCurrentVehicleStatus',function ($http,$q,CONSTANTS){
+
+
+    return {
+
+        all : function(vehicleid){
+
+            return $http.get(''+CONSTANTS.baseUrl+'/getSelectedVehicleLocation?vehicleId='+vehicleid+'&track=single&maps=single',{
+
+                params:{
+
+
+                }
+            })
+        }
+    }
+     console.log("Hello");
+},100000)
+
 
 .factory('getVehicleHistory', function ($http,$q,CONSTANTS){
 
@@ -97,8 +118,9 @@ angular.module('starter.services', [])
 
                 all: function (userId,vehicleId,fromDate,toDate){
 
-                        return $http.get(''+CONSTANTS.baseUrl+'/getVehicleHistory?userId='+userId+'&vehicleId='+vehicleId+'&interval=&fromDateUTC='+fromDate+'000&toDateUTC='+toDate+'000',{
+                        return $http.get(''+CONSTANTS.baseUrl+'/getVehicleHistory?userId='+userId+'&vehicleId='+vehicleId+'&interval=1&fromDateUTC='+fromDate+'000&toDateUTC='+toDate+'000',{
 
+                            // return $http.get(''+CONSTANTS.baseUrl+'/getVehicleHistory?userId='+userId+'&vehicleId=ULTRA-TN66S5503&interval=1&fromDateUTC=1501905850000&toDateUTC=1502035390000',{
 
                             params:{
 

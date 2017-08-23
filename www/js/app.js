@@ -5,21 +5,24 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.services' is found in services.js
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'starter.controllers','starter.directive', 'starter.services','starter.filters','ionic-sidemenu','ngMap','ngAnimate','chart.js','ionic-pullup','starter.PushHandler'])
+angular.module('starter', ['ionic', 'starter.controllers','starter.directive', 'starter.services','starter.filters','ionic-sidemenu','ngMap','ngAnimate','chart.js','ionic-pullup','starter.PushHandler','ion-datetime-picker'])
 
-.run(function($ionicPlatform,RequestsService) {
+.run(function($rootScope,$ionicPlatform,RequestsService) {
+
+  $rootScope.toDateTime = new Date();
+  $rootScope.FromDateTime= new Date();
   $ionicPlatform.ready(function(LoginService,$scope,getUserData,Data) {
 
 
 
 $ionicPlatform.registerBackButtonAction(function (event) {
     event.preventDefault();
-}, 100);
+});
 
 
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-      cordova.plugins.Keyboard.disableScroll(true);
+      cordova.plugins.Keyboard.hideKeyboardAccessoryBar(false);
+      // cordova.plugins.Keyboard.disableScroll(true);
 
 
 

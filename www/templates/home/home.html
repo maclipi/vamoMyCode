@@ -3,11 +3,11 @@
   <ion-nav-buttons >
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 
-    <div class="bar bar-subheader" style="width: 100%; height: 100%;  margin-top: 6% !important;">
+    <div class="bar bar-subheader" style="width: 100%; height: 100%;  margin-top: 2% !important; visibility:{{makeMenuHide}}">
       <ion-scroll direction="x" class="wide-as-needed">
         <div class="buttonScroll row" >
           <div ng-repeat="P in getAllDetails track by $index">
-            <div class="col"><button class="button button-energized" ng-click="listGroup(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
+            <div class="col" style="padding-left: 10px !important;"><button class="button button-energized groupBtn" style="padding-left: 10px !important;" ng-click="listGroup(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
           </div>
         </div>
       </ion-scroll>
@@ -36,8 +36,15 @@
             font-size: 13px;
             line-height: 21px;
             cursor: pointer;
-            /* border-radius: 91%; */
+            /* bord
+          er-radius: 91%; */
         }
+
+        .item-input input, .item-input textarea, .input-label {
+    width: 100%;
+    color: black !important;
+    font-size: 15px;
+}
 
     .bar {
         padding: 0px;
@@ -47,7 +54,7 @@
 
 
 
-  <ion-content padding="true" style="padding-top: 10%;">
+  <ion-content padding="true" style="padding-top: 10%;" on-scroll="showMenu()" on-scroll-complete="hideMenu()" >
 
 
 
@@ -60,25 +67,89 @@
         <ion-header-bar class="bar-balanced">
 
 
-          <h1 class="title">Vehicle Location </h1>
+          <p class="title" ng-if="getValue.vehicleId != null">{{getValue.vehicleId}}</p>
+           <p class="title" ng-if="curVehicleId != null">{{curVehicleId}}</p>
           <button class="button" ng-click="closeModal()">close</button>
 
         </ion-header-bar>
         <ion-content >
           <div ng-if='showMap == 1'>
-            <ng-map center="{{lat}},{{long}}" style="width:100%; height:600px !important;" zoom="10">
-              <marker position="{{lat}},{{long}}" ></marker>
+            <ng-map center="{{lat}},{{long}}" class="iphoneSize"  zoom="10" auto-focus>
+              <marker position="{{lat}},{{long}}" on-click="map.showInfoWindow('bar')"  >
+                
+              </marker>
 
-              <custom-control id="home" position="BOTTOM_LEFT" style="padding-bottom:10%;" index="1">
-                <div>
-                  <ul>
-                    <li><button class="button button-balanced" >Locate Me </button></li>
-
-
-                  </ul>
+              <info-window class="styleMe" id="bar" style="background-color: transparent !important;">
+                      <div  ng-non-bindable>
+                        <div class="row">
+                  <div class="extraInfoType col">Ignition</div>
+                  <div class="extraInfoValue col">{{getValue.ignitionStatus}}</div>
+                  <div class="extraInfoType col">Speed</div>
+                  <div class="extraInfoValue col">{{getValue.speed}} km/h</div>
                 </div>
+                <div class="seprator"></div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-40">L Seen</div>
+                  <div class="extraInfoValue col col-60" >{{getValue.date | date:"dd-MM HH:MM"}}</div>
+                 
+                </div>
+                 <div class="seprator"></div>
+                <div class="extraInfo row">
+                 <div class="extraInfoType col col-40">ODO</div>
+                  <div class="extraInfoValue col col-60" >{{getValue.odoDistance}} KM's</div> 
+                </div>
+                 <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-40">Dist Cov</div>
+                  <div class="extraInfoValue col col-60">{{getValue.distanceCovered}} KM's</div>
+                </div>
+                 <div ng-if="getValue.fuelLitre != 0 " class="seprator"></div>
+                <div ng-if="getValue.fuelLitre != 0 " class="extraInfo row">
+                  <div class="extraInfoType col col-40" ng-if="getValue.fuelLitre != 0 ">Fuel</div>
+                  <div class="extraInfoValue col col-60" ng-if="getValue.fuelLitre != 0 ">{{getValue.fuelLitre}} L</div>
+                </div>
+
+                      </div>
+                    </info-window>
+
+               <custom-control id="home" class="cardAdd" position="BOTTOM" style="margin-left: opx;" index="1" >
+
+                <div class="card" style="border-radius: 12px;">
+            <div class="item item-text-wrap">
+                   
+                   <div class="extraInfoValue" style="padding-left: 1px; color: #585983;">Current Position</div>
+
+                  <div class="seprator"></div>
+                  <div class="extraInfoValue" style="font-size: 14px; font-family: 'Josefin Sans', sans-serif; color: black;">{{getValue.address}}</div>
+
+                  <div class="seprator"></div>
+                  
+                  <div class="row">
+
+  <div class="col">{{getValue.speed}} km/h</div>
+  <div class="col"></div>
+  <div class="col">ODO - </div>
+  <div class="col">{{getValue.odoDistance}} KM's</div>
+  
+</div>
+                  
+                  </div>
+              </div>
+    
               </custom-control>
+
+                <shape name="polyline" id="foo"
+                  path="{{path}}"
+                  stroke-color="#FF0000"
+                  stroke-opacity="1.0"
+                  stroke-weight="3">
+               </shape>
+                    
+
+                    
             </ng-map>
+                
 
 
 
@@ -87,7 +158,145 @@
           <div ng-if='showMap == 2'>
 
 
-            <div class="card">
+            <ng-map center="{{centreLat}},{{centreLong}}" class="iphoneSize"  zoom="10" auto-focus>
+              <marker position="{{centreLat}},{{centreLong}}" on-click="map.showInfoWindow('bar')" ng-init="getHistoryDir(FromDateTime,toDateTime,curVehicleId)"  >
+                
+              </marker>
+              <shape name="polyline" id="foo"
+                  path="{{path}}"
+                  stroke-color="#FF0000"
+                  stroke-opacity="1.0"
+                  stroke-weight="3">
+               </shape>
+
+
+               <info-window class="styleMe" id="bar" style="background-color: transparent !important;">
+                      <div  ng-non-bindable>
+                        
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-40">L Seen</div>
+                  <div class="extraInfoValue col col-60" >{{currentLastSeenDate | date:"dd-MM HH:MM"}}</div>
+                 
+                </div>
+                 <div class="seprator"></div>
+                <div class="extraInfo row">
+                 <div class="extraInfoType col col-40">ODO</div>
+                  <div class="extraInfoValue col col-60" >{{currentSpeed}} Km/h</div> 
+                </div>
+                 <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-40">Dist Cov</div>
+                  <div class="extraInfoValue col col-60">{{currentODO}} KM's</div>
+                </div>
+                 <div ng-if="getValue.fuelLitre != 0 " class="seprator"></div>
+                <div ng-if="getValue.fuelLitre != 0 " class="extraInfo row">
+                  <div class="extraInfoType col col-40" ng-if="getValue.fuelLitre != 0 ">Fuel</div>
+                  <div class="extraInfoValue col col-60" ng-if="getValue.fuelLitre != 0 ">{{getValue.fuelLitre}} L</div>
+                </div>
+
+                      </div>
+                    </info-window>
+
+
+              <!-- <info-window class="styleMe" id="bar" style="background-color: transparent !important;">
+                      <div  ng-non-bindable>
+                        <div class="row">
+                  <div class="extraInfoType col">Ignition</div>
+                  <div class="extraInfoValue col">{{getValue.ignitionStatus}}</div>
+                  <div class="extraInfoType col">Speed</div>
+                  <div class="extraInfoValue col">{{getValue.speed}} km/h</div>
+                </div>
+                <div class="seprator"></div>
+
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-40">L Seen</div>
+                  <div class="extraInfoValue col col-60" >{{getValue.date | date:"dd-MM HH:MM"}}</div>
+                 
+                </div>
+                 <div class="seprator"></div>
+                <div class="extraInfo row">
+                 <div class="extraInfoType col col-40">ODO</div>
+                  <div class="extraInfoValue col col-60" >{{getValue.odoDistance}} KM's</div> 
+                </div>
+                 <div class="seprator"></div>
+                <div class="extraInfo row">
+                  <div class="extraInfoType col col-40">Dist Cov</div>
+                  <div class="extraInfoValue col col-60">{{getValue.distanceCovered}} KM's</div>
+                </div>
+                 <div ng-if="getValue.fuelLitre != 0 " class="seprator"></div>
+                <div ng-if="getValue.fuelLitre != 0 " class="extraInfo row">
+                  <div class="extraInfoType col col-40" ng-if="getValue.fuelLitre != 0 ">Fuel</div>
+                  <div class="extraInfoValue col col-60" ng-if="getValue.fuelLitre != 0 ">{{getValue.fuelLitre}} L</div>
+                </div>
+
+                      </div>
+                    </info-window>
+
+               <custom-control id="home" class="cardAdd" position="BOTTOM" style="margin-left: opx;" index="1" >
+
+                <div class="card" style="border-radius: 12px;">
+            <div class="item item-text-wrap">
+                   
+                   <div class="extraInfoValue" style="padding-left: 10px; color: #585983;">Current Position</div>
+
+                  <div class="seprator"></div>
+                  <div class="extraInfoValue" style="font-size: 12px; font-family: 'Josefin Sans', sans-serif; color: black;">{{getValue.address}}</div>
+                  
+                  </div>
+              </div>
+    
+              </custom-control>
+ -->
+
+                <custom-control id="home" class="cardAdd" Position="BOTTOM" >
+                <div class="card">
+                  
+                  <div class="row">
+                <div class="col">
+               
+                  <label class="item item-input item-stacked-label" > <span class="input-label extraInfoValue" style="padding-left: 15px !important;">To Date Time</span></label>
+                  <div class="item" ion-datetime-picker ng-model="FromDateTime" min="{{restrict}}" max="{{restrict}}" ng-change="getHistoryDir(FromDateTime,toDateTime,curVehicleId)">
+                               <span class="extraInfoValue">  {{FromDateTime| date: "dd-MMM H:mm"}} </span>
+                  </div>
+                    </div>
+                    <div class="col">
+                  <label class="item item-input item-stacked-label"><span class="input-label extraInfoValue" style="padding-left: 15px !important;">From Date Time</span></label>
+                  <div class="item" ion-datetime-picker ng-model="toDateTime" ng-change="getHistoryDir(FromDateTime,toDateTime,curVehicleId)">
+                               <span class="extraInfoValue">  {{toDateTime| date: "dd-MMM H:mm"}}</span>
+                  </div>
+
+
+                </div>
+
+                </div>
+                 
+               
+                   <div class="button-bar energized">
+                      <a class="button" ng-click="pauseMe()"><i class="ion-arrow-right-b"></i></a>
+                      <a class="button"><i class="ion-ios-fastforward"></i></a>
+                      <a class="button"><i class="ion-arrow-resize"></i></a>
+                    </div> 
+                    </div>
+               
+                </div>
+
+               
+
+                
+               
+
+                 </custom-control>
+
+                
+                
+                    
+
+                    
+            </ng-map>
+
+
+
+          <!--   <div class="card">
               <div class="row">
                 <div class="col">
                   <label class="item item-input item-stacked-label">
@@ -145,7 +354,7 @@
               <div class="item item-divider" style="font-size: 12px;">
                 {{item.address}}
               </div>
-            </div>
+            </div> -->
           </div>
 
 
@@ -220,9 +429,9 @@
                     </div>
                   </div>
                   <div class="timeTrack col col-25">
-                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                    <!-- <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br> -->
+                    <span ><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
                   </div>
 
 
@@ -350,9 +559,9 @@
                     </div>
                   </div>
                   <div class="timeTrack col col-25">
-                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                    <!-- <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br> -->
+                    <span ><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
                   </div>
 
 
@@ -421,7 +630,7 @@
 
                   <div class="extraInfoValue addressShow col">{{item.address}}</div>
                   <div class="col col-20">
-                    <button class="button button-outline button-balanced" ng-click="openModal(item.latitude,item.longitude)" style="height:10px !important;">
+                   <button class="button button-outline button-balanced" ng-click="openModal(1,item.vehicleId,item.latitude,item.longitude)" style="height:10px !important;">
                       Go
                     </button>
                   </div>
@@ -483,9 +692,9 @@
                     </div>
                   </div>
                   <div class="timeTrack col col-25">
-                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                    <!-- <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br> -->
+                    <span ><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
                   </div>
 
 
@@ -554,7 +763,7 @@
 
                   <div class="extraInfoValue addressShow col">{{item.address}}</div>
                   <div class="col col-20">
-                    <button class="button button-outline button-balanced" ng-click="openModal(item.latitude,item.longitude)" style="height:10px !important;">
+                   <button class="button button-outline button-balanced" ng-click="openModal(1,item.vehicleId,item.latitude,item.longitude)" style="height:10px !important;">
                       Go
                     </button>
                   </div>
@@ -619,9 +828,9 @@
                     </div>
                   </div>
                   <div class="timeTrack col col-25">
-                    <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b> {{item.date | date:" h:mma"}} </b> </span><br>
-                    <span ng-hide="item.insideGeoFence === 'Y'"><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
+                    <!-- <span ng-show="item.insideGeoFence === 'Y'"><img src="img/icons/home.png" width="13px" height="13px"></span><br> -->
+                    <span ><b> {{item.date | date:" h:mma"}} </b> </span><br>
+                    <span ><b>{{item.date | date:"dd-MMM-yy"}}</b> </span>
                   </div>
 
 
@@ -690,7 +899,7 @@
 
                   <div class="extraInfoValue addressShow col">{{item.address}}</div>
                   <div class="col col-20">
-                    <button class="button button-outline button-balanced" ng-click="openModal(item.latitude,item.longitude)" style="height:10px !important;">
+                    <button class="button button-outline button-balanced" ng-click="openModal(1,item.vehicleId,item.latitude,item.longitude)" style="height:10px !important;">
                       Go
                     </button>
                   </div>
@@ -738,7 +947,7 @@
 
   </ion-content>
 
-  <ion-footer-bar style="background-color:transparent !important; height:17%;">
+  <ion-footer-bar style="background-color:transparent !important; height:10%;">
 
 
 
@@ -746,13 +955,13 @@
     <div class="bar bar-header item-input-inset" style="position:fixed;" ng-hide ="search" ng-show="hide">
       <label class="item-input-wrapper" focus-me>
         <i class="icon ion-ios7-search placeholder-icon"></i>
+        <ion-toolbar>
         <input type="search" ng-model="vehicle.$"   ng-change="vm.search(vm.searchTerm)"
-               ng-model-options="{debounce: 2000}"  placeholder="Vehicle/Group Anything">
+               ng-model-options="{debounce: 2000}"  placeholder="Vehicle/Group Anything"></ion-toolbar>
       </label>
       <button  ng-click="change()" class="button button">
         Cancel
       </button>
-    </div>
     </div>
 
 

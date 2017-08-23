@@ -3,6 +3,17 @@ angular.module('starter.controllers')
 .controller('groupmapCtrl',function($scope,$state,Data,getUserData,$ionicNavBarDelegate,$ionicLoading,getGroupVehiclesDetail, $timeout,NgMap){
     
     console.log("let's work on the Map in better way");
+
+
+                       //hiding groups baar from top ;
+                       $scope.showMenu = function(){
+                        
+                                                $scope.makeMenuHide = 'hidden';
+                                               }
+                                               $scope.hideMenu = function(){
+                                                $scope.makeMenuHide = '';
+                                               }
+                                               //hiding Groups bar END 
     
      $ionicNavBarDelegate.showBackButton(false);
     $scope.$on('$ionicView.enter', function(){

@@ -132,42 +132,7 @@ angular.module('starter.controllers', [])
                 window.localStorage.setItem("username",$scope.user.username);
                 window.localStorage.setItem("password",$scope.user.userpassword);
                 $ionicLoading.hide();
-                                                            var push = PushNotification.init({
-                                android: {
-                                    senderID: "1084877565753",
-                                    icon:"icon"
-                                },
-                                ios: {
-                                    alert: "true",
-                                    badge: "true",
-                                    sound: "true",
-                                    clearBadge: "true"
-                                }
-                                });
-
-                                push.on('registration', function(data){
-
-                                window.localStorage.setItem("token", data.registrationId);
-
-
-                                });
-
-                                push.on('notification', function(data){
-
-                                if (data.additionalData.foreground) {
-
-                                    $ionicPopup.alert({
-
-                                    title: data.message,
-                                    okType: 'button-assertive'
-                                    });
-                                }
-                                });
-
-                                push.on('error', function(err){
-                                alert("PNR Error", JSON.stringify(err));
-                                });
-
+                             
                 $state.go('groupMap');
             }
 

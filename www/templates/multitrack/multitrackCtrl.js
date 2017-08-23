@@ -9,28 +9,22 @@ angular.module('starter.controllers')
 Data.getFirstName();
 
 var username = Data.getFirstName();
-var deviceToken = window.localStorage.getItem("token");
+// var deviceToken = window.localStorage.getItem("token");
 
-       var push = PushNotification.init({
-             android: {
-               senderID: "1084877565753",
-               icon:"icon"
-             },
-             ios: {
-               alert: "true",
-               badge: "true",
-               sound: "true",
-               clearBadge: "true"
-             }
-           });
+//        var push = PushNotification.init({
+//              android: {
+//                senderID: "1084877565753",
+//                icon:"icon"
+//              },
+//              ios: {
+//                alert: "true",
+//                badge: "true",
+//                sound: "true",
+//                clearBadge: "true"
+//              }
+//            });
 
-           push.unregister(function(){
-           window.localStorage.clear();
-               $state.go('login');
-           },function(){
-               alert('unregistering failed');
-               $state.go('login');
-           });
+          window.localStorage.clear();
 
 $state.go('login');
  }

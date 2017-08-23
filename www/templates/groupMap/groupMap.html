@@ -1,17 +1,21 @@
 <ion-view title="Hi,{{username}}" id="page4"  hide-nav-bar="false" class="imageBack" >
 
+
+
+
   <ion-nav-buttons >
     <button menu-toggle="left" class="button button-icon icon ion-navicon"></button>
 
-    <div class="bar bar-subheader" style="width: 100%; height: 150%; margin-top:15px;">
+    <div class="bar bar-subheader" style="width: 100%; height: 100%;  margin-top: -2% !important;  visibility:{{makeMenuHide}}" >
       <ion-scroll direction="x" class="wide-as-needed">
         <div class="buttonScroll row" >
           <div ng-repeat="P in getAllDetails track by $index">
-            <div class="col"><button class="button button-energized" ng-click="getVehicleInfo(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
+            <div class="col" style="padding-left: 10px !important;"><button class="button button-energized groupBtn" style="padding-left: 10px !important;" ng-click="getVehicleInfo(P.group,$index)">{{P.group | split: ':':0 }}</button></div>
           </div>
         </div>
       </ion-scroll>
     </div>
+
   </ion-nav-buttons>
 
 
@@ -26,7 +30,7 @@
             margin-top: 10px;
             padding: 0px 6px;
             min-width: 27px;
-            min-height: 27px;
+            min-height: 20px;
             border-width: 1px;
             border-style: solid;
             border-radius: 4px;
@@ -39,7 +43,7 @@
             /* border-radius: 91%; */
         }
     </style>
-  <ion-content  style="margin-top: 10%;" >
+  <ion-content  style="margin-top: 10%;"  on-scroll="showMenu()" on-scroll-complete="hideMenu()"  >
 
     <!--  <header>
      <ion-scroll direction="x" class="wide-as-needed">

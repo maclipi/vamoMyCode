@@ -28,12 +28,20 @@
 
       <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet">
 
+      <!-- font for the address START -->
+      <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300" rel="stylesheet">
+      <!-- font for the address STOP -->
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
 
     <!-- cordova script (this will be a 404 during development) -->
     <script src="cordova.js"></script>
+
+    <!-- adding time date picker -->
+
+    <script type="text/javascript" src="js/ion-datetime-picker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="js/ion-datetime-picker.min.css">
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
@@ -81,7 +89,7 @@
       <script src="templates/groupMap/groupMap.js"></script>
 
   </head>
-  <body ng-app="starter" class="platform-android platform-cordova platform-webview">
+  <body ng-app="starter" class="platform-android platform-cordova platform-webview platform-ios platform-cordova platform-webview">
     <!--
       The nav bar that will be updated as we navigate between views.
     -->

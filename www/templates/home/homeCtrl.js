@@ -1,6 +1,6 @@
 angular.module('starter.controllers')
 
-.controller('homeCtrl',function ($scope,$interval,$state,$timeout,$ionicPopup,$ionicNavBarDelegate,$ionicScrollDelegate,getUserData,getGroupVehiclesDetail,Data,getVehicleHistory,$ionicLoading,$ionicModal){
+.controller('homeCtrl',function ($scope,$interval,$state,$timeout,$ionicPopup,$ionicNavBarDelegate,$ionicScrollDelegate,getUserData,getGroupVehiclesDetail,Data,getVehicleHistory,$ionicLoading,$ionicModal,getCurrentVehicleStatus){
 
 
             $scope.limitItem = 1;
@@ -17,6 +17,16 @@ angular.module('starter.controllers')
 
 
                        $scope.username =  $scope.user;
+
+
+                       //hiding groups baar from top ;
+                       $scope.showMenu = function(){
+
+                        $scope.makeMenuHide = 'hidden';
+                       }
+                       $scope.hideMenu = function(){
+                        $scope.makeMenuHide = '';
+                       }
 
 
                        //    *********************************************************** API DATA FOR USER START *******************************************
@@ -139,26 +149,194 @@ angular.module('starter.controllers')
                                                 $scope.modal = modal;
                                                 });
 
-
+                        var int ;
             $scope.openModal = function(showValue,vehicleId,lat,long){
 
                $scope.showMap = showValue;
 
+                  if (showValue == 2)
+                  {
+                      $scope.modal.show();
+                        // alert(vehicleId);
+
+                        
+                      $scope.curVehicleId = vehicleId;
+
+                      $scope.isPaused = false;
+                       var time=0;
+
+                        $scope.restrict = new Date();
+
+                        $scope.$on('modal.shown', function() {
 
 
-                  Data.setVehicleNumber(vehicleId);
+                               
+                           $scope.getHistoryDir = function(fromTime, toTime,vehicleNumber){
+                                $ionicLoading.show({
+                                           template: '<p>Please Wait..</p><ion-spinner></ion-spinner>'
+                                           });
 
-              $scope.modal.show();
-              $scope.lat = lat;
-              $scope.long = long;
+              
+              var userID = Data.getFirstName();
+              // alert(fromTime.getUnixTime()+", "+toTime.getUnixTime()+","+vehicleNumber+" "+userID);
+
+              var fromTimeUnix = fromTime.getUnixTime();
+              var toTimeUnix = toTime.getUnixTime();
+
+              
+
+
+              getVehicleHistory.all(userID,vehicleNumber,fromTimeUnix, toTimeUnix).then(function(data){
+
+               
+
+
+                console.log(data.data);
+                 $scope.getData = data.data.vehicleLocations;
+
+
+                if ( toTimeUnix < fromTimeUnix)
+              {
+                  $ionicPopup.alert({
+
+                                     title: ' Please Select proper timings.',
+                                     okType: 'button-assertive'
+                                   });
+                   
+                   $ionicLoading.hide();
+              }
+                  else if (data.data.vehicleId == null)
+                  {
+                    // alert("Hello");
+                    $ionicLoading.hide();
+                  }
+
+               
+                 else if ($scope.getData == null)
+                  {
+                    $ionicPopup.alert({
+
+                                     title: ' Nothing Found ! Please change the Dates and Try Again',
+                                     okType: 'button-assertive'
+                                   });
+                    console.log("No Data Found !!");
+                  }
+                  else 
+                  {
+                    $scope.centreLat = $scope.getData[0].latitude;
+                    $scope.centreLong = $scope.getData[0].longitude;
+                  
+                // console.log($scope.getData.length);
+                var i;
+                $scope.trackData = [];
+                $scope.path = [[$scope.getData[0].latitude,$scope.getData[0].longitude]];
+                for(i =0;i< $scope.getData.length;i++)
+                {
+                $scope.path.push([$scope.getData[i].latitude , $scope.getData[i].longitude]);
+                
+
+                $scope.trackData.push([$scope.getData[i].date,$scope.getData[i].speed,$scope.getData[i].odoDistance])
+              }
+
+
+              $ionicLoading.hide();
+                console.log($scope.path);
+
+                var inc = 0;
+                $scope.id = window.setInterval(function(){
+                        
 
 
 
+                                  console.log($scope.path[inc]);
+                                  $scope.newVal = [];  //for getting the lat,long
+                                  $scope.newData = []; // for getting the current data of the vehicle
+                                  newVal = $scope.path[inc];
+                                  newData = $scope.trackData[inc];
 
+                                  if (newVal != null  && newData != null )
+                                  {
+                                  console.log(newVal[0]); 
+                                  
+                                  console.log(newData[0]);    $scope.currentLastSeenDate = newData[0];  //date     
+                                  console.log(newData[1]);    $scope.currentSpeed = newData[1];  //speed
+                                  console.log(newData[2]);    $scope.currentODO = newData[2];    //ODO distance
+
+                              $scope.centreLat = newVal[0];
+                              $scope.centreLong = newVal[1];
+                                    }
+
+                                $scope.pauseMe = function(){
+
+                                  $scope.isPaused = true;
+                                  $scope.isValue = 10000000;
+                                }
+                                  inc++;
+
+                                    if(newVal == null)
+                                    {
+                                          window.clearInterval($scope.id);
+                                    }
+                                   
+                                  if(!$scope.isPaused) {
+                                     time++;
+                                console.log("Seconds: " + time);
+                              }
+                    
+                                }, 500)
+              }  // ENDING IF CONDITION
+              })
 
 
             }
+
+          });
+              
+
+
+                  }
+                  else {
+
+
+                  
+                                    Data.setVehicleNumber(vehicleId);
+                  
+                                $scope.modal.show();
+                  
+                  
+                               
+                               $scope.path = [[lat,long]];
+                                 $scope.id = window.setInterval(function(){
+                  
+                                  (getCurrentVehicleStatus.all(vehicleId).then(function(data){
+                  
+                                    console.log(data.data);
+                  
+                                      $scope.getValue = data.data;
+                                     $scope.lat = data.data.latitude;
+                                $scope.long = data.data.longitude;
+                  
+                                
+                                  
+                                 
+                                    $scope.path.push([data.data.latitude , data.data.longitude]);
+                                    
+                                console.log("Hello");
+                                }))
+                    
+                                }, 1000)
+                  
+                  
+                                  
+                  }
+
+             
+              
+            }
             $scope.closeModal = function(){
+
+              window.clearInterval($scope.id);
+
 
             $scope.modal.hide();
             }
@@ -259,6 +437,10 @@ angular.module('starter.controllers')
             $scope.movingvehicle = 'none';
             $scope.parkedVehicle = 'none';
             $ionicScrollDelegate.scrollTop();
+
+
+
+
 
 
 
